@@ -1,0 +1,13 @@
+version: '3.7'
+services:
+  db:
+    image: postgres:latest
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: teachbase_dev
+      TZ: Europe/Moscow
+    volumes:
+      - ./docker/postgresql/entrypoint.sh:/entrypoint.sh
+    ports:
+      - 5432:5432
