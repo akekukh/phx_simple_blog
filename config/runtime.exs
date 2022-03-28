@@ -11,6 +11,20 @@ import Config
 if System.get_env("PHX_SERVER") && System.get_env("RELEASE_NAME") do
   config :blog_app, BlogAppWeb.Endpoint, server: true
 end
+app_name = System.get_env("FLY_APP_NAME") || raise "FLY_APP_NAME not available"
+
+config :libcluster,
+    debug: true,
+    topologies: [
+      fly6pn: [
+        strategy: Cluster.Strategy.DNSPoll,
+        config: [
+          polling_interval: 5_000,
+          query: "#{app_name}.internal",
+          node_basename: app_name
+        ]
+      ]
+    ]
 
 if config_env() == :prod do
   database_url =

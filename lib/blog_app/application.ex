@@ -7,6 +7,7 @@ defmodule BlogApp.Application do
 
   @impl true
   def start(_type, _args) do
+    topologies = Application.get_env(:libcluster, :topologies) || []
     children = [
       # Start the Ecto repository
       BlogApp.Repo,
@@ -15,9 +16,10 @@ defmodule BlogApp.Application do
       # Start the PubSub system
       {Phoenix.PubSub, name: BlogApp.PubSub},
       # Start the Endpoint (http/https)
-      BlogAppWeb.Endpoint
+      BlogAppWeb.Endpoint,
       # Start a worker by calling: BlogApp.Worker.start_link(arg)
       # {BlogApp.Worker, arg}
+      {Cluster.Supervisor, [topologies, [name: BlogApp.ClusterSupervisor]]}
     ]
 
     # See https://hexdocs.pm/elixir/Supervisor.html
